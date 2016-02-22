@@ -11,8 +11,9 @@
 			position: relative;
 			width: 300px;
 			height: 300px;
-			border: 1px solid black;
+			border: 1px solid gray;
 			overflow: hidden;
+			background: black;
 		}
 		#svg_holder {
 			position: relative;
@@ -21,22 +22,46 @@
 			left: 50%;
 			top: 50%;
 		}
+		#marker {
+			position: absolute;
+			width: 60px;
+			height: 60px;
+			border-radius: 50%;
+			background-color: #000;
+			top: -30px;
+			left: -30px;
+			background-image: linear-gradient(to right, transparent 50%, #fff 0);
+			animation: spin 0.2s linear infinite;
+		}
+		#marker:before {
+  			content: '';
+			display: block;
+			margin-left: 50%;
+			height: 100%;
+			border-radius: 0 100% 100% 0 / 50%;
+			background-color: inherit;
+			transform-origin: left;
+			transform: rotate(20deg);
+		}
 		#svg1 {
 			position: relative;
 		}
 		#star {
 			fill: red;
-			stroke: #000;
+			stroke: #fff;
 			stroke-width: 0.6;
 			fill-opacity: 0;
 			stroke-miterlimit: 10;
 			stroke-linecap: round;
 		}
-		#dot {
-			fill: none;
-			stroke: #000;
-			stroke-linecap: round;
-			stroke-width: 3;
+
+		@keyframes spin {
+			0% {
+				transform: rotate(0deg);
+			}
+			100% {
+				transform: rotate(360deg);
+			}
 		}
 	</style>
 	
@@ -46,20 +71,18 @@
 	<div id="svg_holder">
 		<svg version="1.1" id="svg1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 		 viewBox="0 0 300 300" enable-background="new 0 0 300 300" width="3000" height="3000" xml:space="preserve">
-			<path id="dot" d="M 150, 50 L 250, 250 L 25, 120 L 275, 120 L 50, 250 L 150, 50 z"/>
 			<path id="star" d="M 150, 50 L 250, 250 L 25, 120 L 275, 120 L 50, 250 L 150, 50 z"/>
 		</svg>
+		<div id="marker"></div>
 	</div>
 </div>
 <script>
 
 (function() {
 	var svg1 = document.getElementById('svg1');
-	var dot = svg1.getElementById('dot');
 	var viewBoxProps = svg1.viewBox.baseVal;
 	var scaleFactor = 0.1;
 
-	// x offset, y offset, x dimension scale factor, y dimension scale factor, length of a given path
 	var oX, oY, scaleX, scaleY, strokeLength;
 	oX = viewBoxProps.x;
 	oY = viewBoxProps.y;
@@ -70,20 +93,15 @@
 
 	// number of points computed along the length of a given path... increase as needed for a smoother animation of the 'marker' element
 	var pointCount = 250;
-	
 	// holds the paths translated to points for the entire svg
 	var svgPoints = [];
-
 	// holds inverted paths
 	var svgInvertPoints = [];
 
-	var setStrokeProps = function(node1, node2) {
-		strokeLength = node1.getTotalLength();
-		node1.style.strokeDasharray = strokeLength + ', ' + strokeLength;
-		node1.style.strokeDashoffset = strokeLength;
-
-		node2.style.strokeDasharray = 0.5 + ', ' + (strokeLength - 0.5);
-		node2.style.strokeDashoffset = strokeLength;
+	var setStrokeProps = function(node) {
+		strokeLength = node.getTotalLength();
+		node.style.strokeDasharray = strokeLength + ', ' + strokeLength;
+		node.style.strokeDashoffset = strokeLength;
 	}
 
 	var getPoints = function(node, length) {
@@ -101,7 +119,7 @@
 		});
 	};
 	
-	setStrokeProps(star, dot);
+	setStrokeProps(star);
 	getPoints(star, strokeLength);
 	getInvertPts();
 
@@ -117,12 +135,10 @@
 	}, '+=1');
 
 	tl.to(star, 8, {'stroke-dashoffset' : 0, ease: Power1.easeInOut}, '-=8');
-	tl.to(dot, 8, {'stroke-dashoffset': 0, ease: Power1.easeInOut}, '-=8');
-	tl.to(dot, 0.5, {'stroke-opacity': 0}, '-=0.4');
-	tl.to(star, 1.8, {'fill-opacity': 1, 'stroke-opacity': 0, ease: Power3.easeInOut}, '-=0.5');
+	tl.to('#marker', 0.6, {opacity: 0}, '-=0.3');
+	tl.to(star, 1.8, {'fill-opacity': 1, 'stroke-opacity': 0, ease: Power3.easeInOut}, '-=0.3');
 	tl.to('#svg1', 1.8, {x: -(50 - (scaleFactor * 50)) + '%', y: -(50 - (scaleFactor * 50)) + '%', scale: scaleFactor, ease: Power3.easeInOut}, '-=1.8');
 	tl.to('#svg_holder', 1.8, {x: '-50%', y: '-50%', ease: Power3.easeInOut}, '-=1.8');
-	
 })();
 
 </script>
