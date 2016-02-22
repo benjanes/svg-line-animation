@@ -14,15 +14,6 @@
 			border: 1px solid black;
 			overflow: hidden;
 		}
-		/*#marker {
-			position: absolute;
-			width: 20px;
-			height: 20px;
-			border-radius: 50%;
-			background-color: red;
-			top: -10px;
-			left: -10px;
-		}*/
 		#svg_holder {
 			position: relative;
 			width: 100%;
@@ -33,7 +24,7 @@
 		#svg1 {
 			position: relative;
 		}
-		.star {
+		#star {
 			fill: red;
 			stroke: #000;
 			stroke-width: 0.6;
@@ -55,9 +46,8 @@
 	<div id="svg_holder">
 		<svg version="1.1" id="svg1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 		 viewBox="0 0 300 300" enable-background="new 0 0 300 300" width="3000" height="3000" xml:space="preserve">
-			
 			<path id="dot" d="M 150, 50 L 250, 250 L 25, 120 L 275, 120 L 50, 250 L 150, 50 z"/>
-			<path class="star" d="M 150, 50 L 250, 250 L 25, 120 L 275, 120 L 50, 250 L 150, 50 z"/>
+			<path id="star" d="M 150, 50 L 250, 250 L 25, 120 L 275, 120 L 50, 250 L 150, 50 z"/>
 		</svg>
 		<div id="marker"></div>
 	</div>
@@ -71,75 +61,66 @@
 	var scaleFactor = 0.1;
 
 	// x offset, y offset, x dimension scale factor, y dimension scale factor, length of a given path
-	var oX, oY, scaleX, scaleY, length;
+	var oX, oY, scaleX, scaleY, strokeLength;
 	oX = viewBoxProps.x;
 	oY = viewBoxProps.y;
 	scaleX = svg1.width.baseVal.value / (viewBoxProps.width);
 	scaleY = svg1.height.baseVal.value / (viewBoxProps.height);
 
-	var paths = svg1.getElementsByClassName('star');
+	var star = svg1.getElementById('star');
 
 	// number of points computed along the length of a given path... increase as needed for a smoother animation of the 'marker' element
 	var pointCount = 250;
 	
 	// holds the paths translated to points for the entire svg
-	var svgPaths = [];
+	var svgPoints = [];
 
 	// holds inverted paths
-	var svgInvertPaths = [];
+	var svgInvertPoints = [];
 
-	var getPoints = function(path, pathIndex) {
-		var pointObj;
-		var pathPoints = [];
+	var setStrokeProps = function(node1, node2) {
+		strokeLength = node1.getTotalLength();
+		node1.style.strokeDasharray = strokeLength + ', ' + strokeLength;
+		node1.style.strokeDashoffset = strokeLength;
 
-		for (var j = 0; j < pointCount; j++) {
-			pointObj = path.getPointAtLength(j / (pointCount - 1) * length);
-			pathPoints.push({x : (pointObj.x - oX) * scaleX, y : (pointObj.y - oY) * scaleY});
-		}
-
-		svgPaths[pathIndex] = pathPoints;
-	};
-
-	for (var i = 0; i < paths.length; i++) {
-		length = paths[i].getTotalLength();
-		paths[i].style.strokeDasharray = length + ', ' + length;
-		paths[i].style.strokeDashoffset = length;
-
-		getPoints(paths[i], i);
+		node2.style.strokeDasharray = 0.5 + ', ' + (strokeLength - 0.5);
+		node2.style.strokeDashoffset = strokeLength;
 	}
 
-	console.log(length);
-	// length set in for loop, would need to fix this if doing multiple paths
-	//dot[0].style.strokeDasharray = 0 + ', ' + length - 20 + ', ' + 20;
-	dot.style.strokeDasharray = 0.5 + ', ' + (length - 0.5);//Math.floor(length);
-	dot.style.strokeDashoffset = length;
+	var getPoints = function(node, length) {
+		var pointObj;
 
-	svgPaths.forEach(function(path, pathIndex) {
-		var pathPoints = [];
-		
-		path.forEach(function(point) {
-			pathPoints.push({x : -point.x, y : -point.y});
+		for (var j = 0; j < pointCount; j++) {
+			pointObj = node.getPointAtLength(j / (pointCount - 1) * length);
+			svgPoints.push({x : (pointObj.x - oX) * scaleX, y : (pointObj.y - oY) * scaleY});
+		}
+	};
+
+	var getInvertPts = function() {
+		svgPoints.forEach(function(point) {
+			svgInvertPoints.push({ x : -point.x, y : -point.y });
 		});
-
-		svgInvertPaths[pathIndex] = pathPoints;
-	});
+	};
+	
+	setStrokeProps(star, dot);
+	getPoints(star, strokeLength);
+	getInvertPts();
 
 	var tl = new TimelineMax();
 
-	tl.set('#svg1', {x: svgInvertPaths[0][0].x, y: svgInvertPaths[0][0].y});
+	tl.set('#svg1', {x: svgInvertPoints[0].x, y: svgInvertPoints[0].y});
 
 	tl.to('#svg1', 8, {
 		bezier: {
 			type: 'soft',
-			values: svgInvertPaths[0]
+			values: svgInvertPoints
 		}, ease: Power1.easeInOut
 	}, '+=1');
 
-	tl.to(paths[0], 8, {'stroke-dashoffset' : 0, ease: Power1.easeInOut}, '-=8');
+	tl.to(star, 8, {'stroke-dashoffset' : 0, ease: Power1.easeInOut}, '-=8');
 	tl.to(dot, 8, {'stroke-dashoffset': 0, ease: Power1.easeInOut}, '-=8');
-	tl.set('#marker', {opacity: 0});
 	tl.to(dot, 0.5, {'stroke-opacity': 0}, '-=0.4');
-	tl.to('.star', 1.8, {'fill-opacity': 1, 'stroke-opacity': 0, ease: Power3.easeInOut}, '-=0.5');
+	tl.to(star, 1.8, {'fill-opacity': 1, 'stroke-opacity': 0, ease: Power3.easeInOut}, '-=0.5');
 	tl.to('#svg1', 1.8, {x: -(50 - (scaleFactor * 50)) + '%', y: -(50 - (scaleFactor * 50)) + '%', scale: scaleFactor, ease: Power3.easeInOut}, '-=1.8');
 	tl.to('#svg_holder', 1.8, {x: '-50%', y: '-50%', ease: Power3.easeInOut}, '-=1.8');
 	
