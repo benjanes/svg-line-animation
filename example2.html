@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script type="text/javascript" src="libs/TweenMax.min.js"></script>
+	<style type="text/css">
+		.container {
+			position: relative;
+			width: 300px;
+			height: 250px;
+		}
+		#marker {
+			position: absolute;
+			width: 6px;
+			height: 6px;
+			border-radius: 50%;
+			background-color: red;
+			top: -3px;
+			left: -3px;
+			opacity: 0;
+		}
+	</style>
+	
+</head>
+<body>
+<div class="container">
+	<svg version="1.1" id="svg1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 300 250" enable-background="new 0 0 300 250" width="300" height="250" xml:space="preserve">
+		<path fill="none" class="char" stroke="#000" stroke-width="1" stroke-miterlimit="10" d="M28.3,66.3c4.5-2.9,8.3-6.8,11.1-11.4c-1,13.9-1.9,27.7-2.9,41.6"/>
+		<path fill="none" class="char" stroke="#000" stroke-width="1" stroke-miterlimit="10" d="M54.8,43.6c-1.2,13.3-1.6,26.7-1.1,40c1.4-4.2-0.4-9.2-4.1-11.6
+			c-3.7-2.4-9-2-12.2,1c13.6-0.9,27-5.8,38-13.9c-1.6-1.3-4.2-0.6-5.6,0.9c-1.4,1.5-2,3.6-2.5,5.6c-0.3,1.1-0.6,2.2-0.2,3.2
+			c0.6,1.7,2.7,2.4,4.6,2.6c4.9,0.4,9.8-1.1,14.4-3c7.1-3.1,14-7.7,17.7-14.5c1.4-2.6,2.3-5.6,1.8-8.5s-2.6-5.6-5.5-6.2
+			c-4-0.8-7.6,2.8-8.9,6.6c-2.7,8.1,2.3,17.3,9.4,22.1c4.8,3.2,11,5,16.5,3.2c4.2-1.4,7.6-4.8,9.9-8.6c4.6-7.5,5.5-17.2,2.5-25.5
+			c-0.2-0.5-0.4-1.1-0.9-1.5c-1.3-1.2-3.4,0-4.6,1.3c-5.8,6.5-6.1,17.4-0.2,23.8c5.9,6.4,17.4,6.6,23.1,0.1c5.6-6.4,5.3-17.1,12.3-22
+			c1.2,2.2,3.6,3.7,6,3.7c-2.2-2.7-6.3-3.6-9.4-2.1c-3.1,1.5-5,5.2-4.3,8.6c0.7,3.7,4.1,6.4,7.8,7.2c3.7,0.8,7.5,0.1,11-1.2
+			c2.8-1,5.5-2.3,7.4-4.6c1.9-2.3,2.7-5.6,1.3-8.2c-1.3-2.6-4.5-3.8-7.4-3.5c-2.9,0.3-5.4,1.9-7.5,3.9c25.3-7,49.8-17.2,72.5-30.3"/>
+		<path fill="none" class="char" stroke="#000" stroke-width="1" stroke-miterlimit="10" d="M61.2,118.5c-0.6,12.6-0.3,25.2,0.9,37.7c0.3,3.2,0.9,6.7,3.3,8.9
+			c1.9,1.8,4.7,2.2,7.3,2.4c7,0.5,14.2-0.8,20.1-4.6c5.8-3.8,10.1-10.4,10.1-17.4c0-1.5-1.1-3.5-2.4-2.9c-0.5,0.3-0.8,0.8-1,1.4
+			c-1.1,3-1.4,6.7,0.8,9c1.7,1.9,4.4,2.4,6.9,1.9s4.7-1.7,6.8-2.9c4.1-2.3,8.3-4.8,11.3-8.4c4.5-5.4,5.7-12.7,6.5-19.7
+			c4.1,3.2,7.4,7.3,9.6,12c-4.9,0.2-9.7,0.5-14.6,0.7c6.3,0,12.6-1.4,18.4-4c2.5-1.2,4.9-2.5,7-4.3c4.9-4.2,7.8-10.4,8.3-16.8
+			c0.4-6.4-1.6-12.9-5.4-18.1c0.6,11,5.3,21.7,13,29.5c1.5,1.5,3.3,3,5.5,2.9c2.1-0.1,3.8-1.8,5.2-3.4c6.7-7.8,12.2-16.5,16.2-25.9"/>
+		<path fill="none" class="char" stroke="#000" stroke-width="1" stroke-miterlimit="10" d="M33.6,130.6c9.9-6.8,21.7-10.4,33.2-13.9c14.8-4.4,29.5-8.9,44.3-13.3
+			"/>
+		<path fill="none" class="char" stroke="#000" stroke-width="1" stroke-miterlimit="10" d="M146.5,112.3c12.2-2.6,24.3-5.9,36.1-10"/>
+	</svg>
+	<div id="marker"></div>
+</div>
+<script>
+
+// this animation working properly depends on how the paths are written in SVG. a given path element's 'd' attribute should only contain a 
+// single 'M' (the moveto command)... furthermore, the 'M' that it does contain should be the first character in the 'd' attr's string.
+// check out how the 4th path is drawn in SVG and the resulting animation for an example of how this will break...
+
+(function() {
+	var svg1 = document.getElementById('svg1');
+	var viewBoxProps = svg1.viewBox.baseVal;
+
+	// x offset, y offset, x dimension scale factor, y dimension scale factor, length of a given path
+	var oX, oY, scaleX, scaleY, length;
+	oX = viewBoxProps.x;
+	oY = viewBoxProps.y;
+	scaleX = svg1.width.baseVal.value / (viewBoxProps.width);
+	scaleY = svg1.height.baseVal.value / (viewBoxProps.height);
+
+	var paths = svg1.getElementsByTagName('path');
+
+	// number of points computed along the length of a given path... increase as needed for a smoother animation of the 'marker' element
+	var pointCount = 150;
+	
+	// holds the paths translated to points for the entire svg
+	var svgPaths = [];
+
+	var getPoints = function(path, pathIndex) {
+		var pointObj;
+		var pathPoints = [];
+
+		for (var j = 0; j < pointCount; j++) {
+			pointObj = path.getPointAtLength(j / (pointCount - 1) * length);
+			pathPoints.push({x : (pointObj.x - oX) * scaleX, y : (pointObj.y - oY) * scaleY});
+		}
+
+		svgPaths[pathIndex] = pathPoints;
+	};
+
+	for (var i = 0; i < paths.length; i++) {
+		length = paths[i].getTotalLength();
+		paths[i].style.strokeDasharray = length + ' ' + length;
+		paths[i].style.strokeDashoffset = length;
+
+		// only need to get the points if doing an animation of a 'marker' element that follows the stroke animation
+		getPoints(paths[i], i);
+	}
+
+	// example of doing the animation for stroke-dashoffset and the 'marker' element
+	// set or animate the marker to the starting point of the next stroke path to be animated prior to starting the two concurrent animations
+	var tl = new TimelineMax();
+
+	// use RoughEase to make it more "handwriting" like
+	var roughEase = new RoughEase({strength:0.2, points:15, randomize:false, taper:"both"});
+
+	tl.set('#marker', {opacity: 1, x: svgPaths[0][0].x, y:  svgPaths[0][0].y});
+	tl.to(paths[0], 0.75, {'stroke-dashoffset' : 0})
+		.to('#marker', 0.75, {
+			bezier: {
+				type: 'soft',
+				values: svgPaths[0]
+			}
+		}, '-=0.75');
+
+	tl.set('#marker', {x: svgPaths[1][0].x, y:  svgPaths[1][0].y});
+	tl.to(paths[1], 3.1, {'stroke-dashoffset' : 0})
+		.to('#marker', 3.1, {
+			bezier: {
+				type: 'soft',
+				values: svgPaths[1]
+			}
+		}, '-=3.1');
+
+	tl.set('#marker', {x: svgPaths[2][0].x, y:  svgPaths[2][0].y});
+	tl.to(paths[2], 1.5, {'stroke-dashoffset' : 0})
+		.to('#marker', 1.5, {
+			bezier: {
+				type: 'soft',
+				values: svgPaths[2]
+			}
+		}, '-=1.5');
+
+	tl.set('#marker', {x: svgPaths[3][0].x, y:  svgPaths[3][0].y});
+	tl.to(paths[3], 1.5, {'stroke-dashoffset' : 0})
+		.to('#marker', 1.5, {
+			bezier: {
+				type: 'soft',
+				values: svgPaths[3]
+			}
+		}, '-=1.5');
+
+	tl.set('#marker', {x: svgPaths[4][0].x, y:  svgPaths[4][0].y});
+	tl.to(paths[4], 1.5, {'stroke-dashoffset' : 0})
+		.to('#marker', 1.5, {
+			bezier: {
+				type: 'soft',
+				values: svgPaths[4]
+			}
+		}, '-=1.5');
+
+	// tl.set('#marker', {x: svgPaths[5][0].x, y:  svgPaths[5][0].y});
+	// tl.to(paths[5], 1.5, {'stroke-dashoffset' : 0})
+	// 	.to('#marker', 1.5, {
+	// 		bezier: {
+	// 			type: 'soft',
+	// 			values: svgPaths[5]
+	// 		}
+	// 	}, '-=1.5');
+
+	// tl.set('#marker', {x: svgPaths[6][0].x, y:  svgPaths[6][0].y});
+	// tl.to(paths[6], 1.5, {'stroke-dashoffset' : 0})
+	// 	.to('#marker', 1.5, {
+	// 		bezier: {
+	// 			type: 'soft',
+	// 			values: svgPaths[6]
+	// 		}
+	// 	}, '-=1.5');
+
+	// tl.set('#marker', {x: svgPaths[7][0].x, y:  svgPaths[7][0].y});
+	// tl.to(paths[7], 1.5, {'stroke-dashoffset' : 0})
+	// 	.to('#marker', 1.5, {
+	// 		bezier: {
+	// 			type: 'soft',
+	// 			values: svgPaths[7]
+	// 		}
+	// 	}, '-=1.5');
+})();
+
+</script>
+
+</body>
+</html>
