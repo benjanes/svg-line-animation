@@ -73,32 +73,29 @@
 
 	// number of points computed along the length of a given path... increase as needed for a smoother animation of the 'marker' element
 	var pointCount = 150;
-	
 	// holds the paths translated to points for the entire svg
 	var svgPaths = [];
-
 	// holds inverted paths
 	var svgInvertPaths = [];
 
-	var getPoints = function(path, pathIndex) {
+	var getPoints = function(path, pathIndex, len) {
 		var pointObj;
 		var pathPoints = [];
 
 		for (var j = 0; j < pointCount; j++) {
-			pointObj = path.getPointAtLength(j / (pointCount - 1) * length);
+			pointObj = path.getPointAtLength(j / (pointCount - 1) * len);
 			pathPoints.push({x : (pointObj.x - oX) * scaleX, y : (pointObj.y - oY) * scaleY});
 		}
 
 		svgPaths[pathIndex] = pathPoints;
 	};
 
-	for (var i = 0; i < paths.length; i++) {
-		length = paths[i].getTotalLength();
-		paths[i].style.strokeDasharray = length + ' ' + length;
-		paths[i].style.strokeDashoffset = length;
-
-		getPoints(paths[i], i);
-	}
+	[].forEach.call(paths, function(path, i) {
+		var length = path.getTotalLength();
+		path.style.strokeDasharray = length + ' ' + length;
+		path.style.strokeDashoffset = length;
+		getPoints(path, i, length);
+	});
 
 	svgPaths.forEach(function(path, pathIndex) {
 		var pathPoints = [];
@@ -133,8 +130,6 @@
 	});
 
 	tl.to(paths[1], 8, {'stroke-dashoffset' : 0}, '-=8');
-
-	
 })();
 
 </script>
