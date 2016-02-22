@@ -39,15 +39,10 @@
 </div>
 <script>
 
-// this animation working properly depends on how the paths are written in SVG. a given path element's 'd' attribute should only contain a 
-// single 'M' (the moveto command)... furthermore, the 'M' that it does contain should be the first character in the 'd' attr's string.
-// check out how the 4th path is drawn in SVG and the resulting animation for an example of how this will break...
-
 (function() {
 	var svg1 = document.getElementById('svg1');
 	var viewBoxProps = svg1.viewBox.baseVal;
 
-	// x offset, y offset, x dimension scale factor, y dimension scale factor, length of a given path
 	var oX, oY, scaleX, scaleY, length;
 	oX = viewBoxProps.x;
 	oY = viewBoxProps.y;
@@ -62,33 +57,27 @@
 	// holds the paths translated to points for the entire svg
 	var svgPaths = [];
 
-	var getPoints = function(path, pathIndex) {
+	var getPoints = function(path, pathIndex, len) {
 		var pointObj;
 		var pathPoints = [];
 
 		for (var j = 0; j < pointCount; j++) {
-			pointObj = path.getPointAtLength(j / (pointCount - 1) * length);
+			pointObj = path.getPointAtLength(j / (pointCount - 1) * len);
 			pathPoints.push({x : (pointObj.x - oX) * scaleX, y : (pointObj.y - oY) * scaleY});
 		}
 
 		svgPaths[pathIndex] = pathPoints;
 	};
 
-	for (var i = 0; i < paths.length; i++) {
-		length = paths[i].getTotalLength();
-		paths[i].style.strokeDasharray = length + ' ' + length;
-		paths[i].style.strokeDashoffset = length;
-
-		// only need to get the points if doing an animation of a 'marker' element that follows the stroke animation
-		getPoints(paths[i], i);
-	}
-
-	// example of doing the animation for stroke-dashoffset and the 'marker' element
-	// set or animate the marker to the starting point of the next stroke path to be animated prior to starting the two concurrent animations
+	[].forEach.call(paths, function(path, i) {
+		var length = path.getTotalLength();
+		path.style.strokeDasharray = length + ' ' + length;
+		path.style.strokeDashoffset = length;
+		getPoints(path, i, length);
+	});
+	
 	var tl = new TimelineMax();
 
-	// use RoughEase to make it more "handwriting" like
-	var roughEase = new RoughEase({strength:0.2, points:15, randomize:false, taper:"both"});
 
 	tl.set('#marker', {opacity: 1, x: svgPaths[0][0].x, y:  svgPaths[0][0].y});
 	tl.to(paths[0], 0.75, {'stroke-dashoffset' : 0})
@@ -108,59 +97,6 @@
 			}
 		}, '-=3.1');
 
-	tl.set('#marker', {x: svgPaths[2][0].x, y:  svgPaths[2][0].y});
-	tl.to(paths[2], 1.5, {'stroke-dashoffset' : 0})
-		.to('#marker', 1.5, {
-			bezier: {
-				type: 'soft',
-				values: svgPaths[2]
-			}
-		}, '-=1.5');
-
-	tl.set('#marker', {x: svgPaths[3][0].x, y:  svgPaths[3][0].y});
-	tl.to(paths[3], 1.5, {'stroke-dashoffset' : 0})
-		.to('#marker', 1.5, {
-			bezier: {
-				type: 'soft',
-				values: svgPaths[3]
-			}
-		}, '-=1.5');
-
-	tl.set('#marker', {x: svgPaths[4][0].x, y:  svgPaths[4][0].y});
-	tl.to(paths[4], 1.5, {'stroke-dashoffset' : 0})
-		.to('#marker', 1.5, {
-			bezier: {
-				type: 'soft',
-				values: svgPaths[4]
-			}
-		}, '-=1.5');
-
-	// tl.set('#marker', {x: svgPaths[5][0].x, y:  svgPaths[5][0].y});
-	// tl.to(paths[5], 1.5, {'stroke-dashoffset' : 0})
-	// 	.to('#marker', 1.5, {
-	// 		bezier: {
-	// 			type: 'soft',
-	// 			values: svgPaths[5]
-	// 		}
-	// 	}, '-=1.5');
-
-	// tl.set('#marker', {x: svgPaths[6][0].x, y:  svgPaths[6][0].y});
-	// tl.to(paths[6], 1.5, {'stroke-dashoffset' : 0})
-	// 	.to('#marker', 1.5, {
-	// 		bezier: {
-	// 			type: 'soft',
-	// 			values: svgPaths[6]
-	// 		}
-	// 	}, '-=1.5');
-
-	// tl.set('#marker', {x: svgPaths[7][0].x, y:  svgPaths[7][0].y});
-	// tl.to(paths[7], 1.5, {'stroke-dashoffset' : 0})
-	// 	.to('#marker', 1.5, {
-	// 		bezier: {
-	// 			type: 'soft',
-	// 			values: svgPaths[7]
-	// 		}
-	// 	}, '-=1.5');
 })();
 
 </script>
