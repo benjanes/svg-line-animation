@@ -4,115 +4,115 @@
 	<title></title>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.2/TweenMax.min.js"></script>
 	<style type="text/css">
-		*, *:before, *:after {
-			box-sizing: border-box;
-		}
-		.container {
-			position: relative;
-			width: 300px;
-			height: 300px;
-			border: 1px solid gray;
-			overflow: hidden;
-			background: black;
-		}
-		#svg_holder {
-			position: relative;
-			width: 100%;
-			height: 100%;
-			left: 50%;
-			top: 50%;
-		}
-		#string_holder {
-			position: absolute;
-			transform: rotate(-208deg);
-		}
-		#wound_string {
-			position: absolute;
-			width: 90px;
-			height: 90px;
-			border-radius: 50%;
-			background-color: #fff;
-			top: -45px;
-			left: -45px;
-		}
-		#unwinding_string {
-			position: absolute;
-			top: 36px;
-			width: 16px;
-			height: 35px;
-			background-color: #fff;
-		}
-		#unwinding_string:after {
-			content: '';
-			position: absolute;
-			background-color: #000;
-			width: 50px;
-			height: 35px;
-			border-radius: 61px 0 0 0;
-		}
-		
-		#spooler {
-			position: absolute;
-			width: 60px;
-			height: 60px;
-			border-radius: 50%;
-			background-color: #000;
-			top: -30px;
-			left: -30px;
-			background-image: linear-gradient(to right, transparent 50%, #fff 0);
-			animation: spin 1s linear infinite;
-		}
-		#spooler:before {
-  		content: '';
-			display: block;
-			margin-left: 50%;
-			height: 100%;
-			border-radius: 0 100% 100% 0 / 50%;
-			background-color: inherit;
-			transform-origin: left;
-			transform: rotate(20deg);
-		}
-		#spooler:after {
-			content: '';
-			position: absolute;
-			left: 31px;
-			top: 2px;
-			height: 6px;
-			width: 6px;
-			background-color: #000;
-			border-radius: 50%;
-		}
-		#svg1 {
-			position: relative;
-		}
-		#star {
-			fill: red;
-			stroke: #fff;
-			stroke-width: 0.6;
-			fill-opacity: 0;
-			stroke-miterlimit: 10;
-			stroke-linecap: round;
-		}
+	*, *:before, *:after {
+		box-sizing: border-box;
+	}
+	.container {
+		position: relative;
+		width: 300px;
+		height: 300px;
+		border: 1px solid gray;
+		overflow: hidden;
+		background: black;
+	}
+	#svg_container {
+		position: relative;
+		width: 100%;
+		height: 100%;
+		left: 50%;
+		top: 50%;
+	}
+	#string {
+		position: absolute;
+		transform: rotate(-208deg);
+	}
+	#wound_string {
+		position: absolute;
+		width: 90px;
+		height: 90px;
+		border-radius: 50%;
+		background-color: #fff;
+		top: -45px;
+		left: -45px;
+	}
+	#unwinding_string {
+		position: absolute;
+		top: 36px;
+		width: 16px;
+		height: 35px;
+		background-color: #fff;
+	}
+	#unwinding_string:after {
+		content: '';
+		position: absolute;
+		background-color: #000;
+		width: 50px;
+		height: 35px;
+		border-radius: 61px 0 0 0;
+	}
 
-		@keyframes spin {
-			0% {
-				transform: rotate(0deg);
-			}
-			100% {
-				transform: rotate(360deg);
-			}
+	#spooler {
+		position: absolute;
+		width: 60px;
+		height: 60px;
+		border-radius: 50%;
+		background-color: #000;
+		top: -30px;
+		left: -30px;
+		background-image: linear-gradient(to right, transparent 50%, #fff 0);
+		animation: spin 1s linear infinite;
+	}
+	#spooler:before {
+		content: '';
+		display: block;
+		margin-left: 50%;
+		height: 100%;
+		border-radius: 0 100% 100% 0 / 50%;
+		background-color: inherit;
+		transform-origin: left;
+		transform: rotate(20deg);
+	}
+	#spooler:after {
+		content: '';
+		position: absolute;
+		left: 31px;
+		top: 2px;
+		height: 6px;
+		width: 6px;
+		background-color: #000;
+		border-radius: 50%;
+	}
+	#star_svg {
+		position: relative;
+	}
+	#star {
+		fill: red;
+		stroke: #fff;
+		stroke-width: 0.6;
+		fill-opacity: 0;
+		stroke-miterlimit: 10;
+		stroke-linecap: round;
+	}
+
+	@keyframes spin {
+		0% {
+			transform: rotate(0deg);
 		}
+		100% {
+			transform: rotate(360deg);
+		}
+	}
 	</style>
 	
 </head>
 <body>
 <div class="container">
-	<div id="svg_holder">
-		<div id="string_holder">
+	<div id="svg_container">
+		<div id="string">
 			<div id="unwinding_string"></div>
 			<div id="wound_string"></div>
 		</div>
-		<svg version="1.1" id="svg1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+		<svg version="1.1" id="star_svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 		 viewBox="0 0 300 300" enable-background="new 0 0 300 300" width="3000" height="3000" xml:space="preserve">
 			<path id="star" d="M 150, 50 L 250, 250 L 25, 120 L 275, 120 L 50, 250 L 150, 50 z"/>
 		</svg>
@@ -122,23 +122,25 @@
 <script>
 
 (function() {
-	var svg1 = document.getElementById('svg1');
-	var viewBoxProps = svg1.viewBox.baseVal;
-	var scaleFactor = 0.1;
+	var container = document.getElementById('svg_container');
+	var svg = document.getElementById('star_svg');
+	var star = svg.getElementById('star');
+	var string = document.getElementById('string');
+	var unwinding_string = document.getElementById('unwinding_string');
+	var wound_string = document.getElementById('wound_string');
+	var spooler = document.getElementById('spooler');
 
+	var scaleFactor = 0.1;
+	var pointCount = 250;
+
+	var viewBoxProps = svg.viewBox.baseVal;
 	var oX, oY, scaleX, scaleY, strokeLength;
 	oX = viewBoxProps.x;
 	oY = viewBoxProps.y;
-	scaleX = svg1.width.baseVal.value / (viewBoxProps.width);
-	scaleY = svg1.height.baseVal.value / (viewBoxProps.height);
+	scaleX = svg.width.baseVal.value / (viewBoxProps.width);
+	scaleY = svg.height.baseVal.value / (viewBoxProps.height);
 
-	var star = svg1.getElementById('star');
-
-	// number of points computed along the length of a given path... increase as needed for a smoother animation of the 'spooler' element
-	var pointCount = 250;
-	// holds the paths translated to points for the entire svg
 	var svgPoints = [];
-	// holds inverted paths
 	var svgInvertPoints = [];
 
 	var setStrokeProps = function(node) {
@@ -149,7 +151,6 @@
 
 	var getPoints = function(node, length) {
 		var pointObj;
-
 		for (var j = 0; j < pointCount; j++) {
 			pointObj = node.getPointAtLength(j / (pointCount - 1) * length);
 			svgPoints.push({x : (pointObj.x - oX) * scaleX, y : (pointObj.y - oY) * scaleY});
@@ -161,34 +162,35 @@
 			svgInvertPoints.push({ x : -point.x, y : -point.y });
 		});
 	};
+
+	var initAnim = function() {
+		var tl = new TimelineMax();
+
+		tl.set(svg, {x: svgInvertPoints[0].x, y: svgInvertPoints[0].y});
+		tl.to(svg, 15, {
+			bezier: {
+				type: 'soft',
+				values: svgInvertPoints
+			}, ease: Power0.easeNone
+		}, '+=0.5');
+		tl.to(star, 15, {'stroke-dashoffset' : 0, ease: Power0.easeNone}, '-=15');
+		tl.to(wound_string, 15, {scale: 0.67, ease: Power0.easeNone}, '-=15');
+		tl.fromTo(unwinding_string, 0.4, {y: -30}, {y: 0}, '-=15');
+		tl.to(unwinding_string, 14.5, {y: -15, ease: Power0.easeNone}, '-=14.5');
+		tl.set(string, {rotation: -60}, '-=12.25');
+		tl.set(string, {rotation: 90}, '-=9.05');
+		tl.set(string, {rotation: -120}, '-=5.95');
+		tl.set(string, {rotation: 25}, '-=2.8');
+		tl.to([spooler, string], 0.6, {opacity: 0}, '-=0.3');
+		tl.to(star, 1.8, {'fill-opacity': 1, 'stroke-opacity': 0, ease: Power3.easeInOut}, '-=0.3');
+		tl.to(svg, 1.8, {x: -(50 - (scaleFactor * 50)) + '%', y: -(50 - (scaleFactor * 50)) + '%', scale: scaleFactor, ease: Power3.easeInOut, force3D: true, z: 0.01}, '-=1.8');
+		tl.to(container, 1.8, {x: '-50%', y: '-50%', ease: Power3.easeInOut, force3D: true, z: 0.01}, '-=1.8');
+	};
 	
 	setStrokeProps(star);
 	getPoints(star, strokeLength);
 	getInvertPts();
-
-	var tl = new TimelineMax();
-
-	tl.set('#svg1', {x: svgInvertPoints[0].x, y: svgInvertPoints[0].y});
-
-	tl.to('#svg1', 15, {
-		bezier: {
-			type: 'soft',
-			values: svgInvertPoints
-		}, ease: Power0.easeNone
-	}, '+=0.5');
-
-	tl.to(star, 15, {'stroke-dashoffset' : 0, ease: Power0.easeNone}, '-=15');
-	tl.to('#wound_string', 15, {scale: 0.67, ease: Power0.easeNone}, '-=15');
-	tl.fromTo('#unwinding_string', 0.4, {y: -30}, {y: 0}, '-=15');
-	tl.to('#unwinding_string', 14.5, {y: -15, ease: Power0.easeNone}, '-=14.5');
-	tl.set('#string_holder', {rotation: -60}, '-=12.25');
-	tl.set('#string_holder', {rotation: 90}, '-=9.05');
-	tl.set('#string_holder', {rotation: -120}, '-=5.95');
-	tl.set('#string_holder', {rotation: 25}, '-=2.8');
-	tl.to(['#spooler', '#string_holder'], 0.6, {opacity: 0}, '-=0.3');
-	tl.to(star, 1.8, {'fill-opacity': 1, 'stroke-opacity': 0, ease: Power3.easeInOut}, '-=0.3');
-	tl.to('#svg1', 1.8, {x: -(50 - (scaleFactor * 50)) + '%', y: -(50 - (scaleFactor * 50)) + '%', scale: scaleFactor, ease: Power3.easeInOut, force3D: true, z: 0.01}, '-=1.8');
-	tl.to('#svg_holder', 1.8, {x: '-50%', y: '-50%', ease: Power3.easeInOut, force3D: true, z: 0.01}, '-=1.8');
+	initAnim();
 })();
 
 </script>
