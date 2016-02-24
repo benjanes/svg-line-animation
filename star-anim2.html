@@ -22,7 +22,42 @@
 			left: 50%;
 			top: 50%;
 		}
-		#marker {
+		#string {
+			position: absolute;
+			width: 70px;
+			height: 70px;
+			border-radius: 50%;
+			background-color: #fff;
+			top: -35px;
+			left: -35px;
+			transform: rotate(-118deg);
+		}
+		#string:before {
+			content: '';
+			position: absolute;
+			background-color: #fff;
+			left: 60px;
+			bottom: 33px;
+			width: 30px;
+			height: 20px;
+			opacity: 0;
+			animation: fadeIn 0.5s 0.5s;
+			animation-fill-mode: forwards;
+		}
+		#string:after {
+			content: '';
+			position: absolute;
+			background-color: #000;
+			left: 65px;
+			bottom: 37px;
+			width: 30px;
+			height: 20px;
+			border-radius: 0 0 0 20px;
+			/*opacity: 0;
+			animation: fadeIn 0.5s 0.5s;
+			animation-fill-mode: forwards;*/
+		}
+		#spool {
 			position: absolute;
 			width: 60px;
 			height: 60px;
@@ -31,10 +66,10 @@
 			top: -30px;
 			left: -30px;
 			background-image: linear-gradient(to right, transparent 50%, #fff 0);
-			animation: spin 0.2s linear infinite;
+			animation: spin 1s linear infinite;
 		}
-		#marker:before {
-  			content: '';
+		#spool:before {
+  		content: '';
 			display: block;
 			margin-left: 50%;
 			height: 100%;
@@ -63,17 +98,26 @@
 				transform: rotate(360deg);
 			}
 		}
+		@keyframes fadeIn {
+			0% {
+				opacity: 0;
+			}
+			100% {
+				opacity: 1;
+			}
+		}
 	</style>
 	
 </head>
 <body>
 <div class="container">
 	<div id="svg_holder">
+		<div id="string"></div>
 		<svg version="1.1" id="svg1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 		 viewBox="0 0 300 300" enable-background="new 0 0 300 300" width="3000" height="3000" xml:space="preserve">
 			<path id="star" d="M 150, 50 L 250, 250 L 25, 120 L 275, 120 L 50, 250 L 150, 50 z"/>
 		</svg>
-		<div id="marker"></div>
+		<div id="spool"></div>
 	</div>
 </div>
 <script>
@@ -91,7 +135,7 @@
 
 	var star = svg1.getElementById('star');
 
-	// number of points computed along the length of a given path... increase as needed for a smoother animation of the 'marker' element
+	// number of points computed along the length of a given path... increase as needed for a smoother animation of the 'spool' element
 	var pointCount = 250;
 	// holds the paths translated to points for the entire svg
 	var svgPoints = [];
@@ -118,6 +162,27 @@
 			svgInvertPoints.push({ x : -point.x, y : -point.y });
 		});
 	};
+
+	var getRotations = function(n) {
+		var totRots = [];
+		var oneRot = [
+			{x: -35, y: -35},
+			{x: 0, y: -50},
+			{x: 35, y: -35},
+			{x: 50, y: 0},
+			{x: 35, y: 35},
+			{x: 0, y: 50},
+			{x: -35, y: 35},
+			{x: -50, y: 0}
+		];
+
+		for (var i = 0; i < n; i++) {
+			var nextRot = oneRot.slice();
+			totRots = totRots.concat(nextRot);
+		}
+
+		return totRots;
+	}
 	
 	setStrokeProps(star);
 	getPoints(star, strokeLength);
@@ -126,16 +191,29 @@
 	var tl = new TimelineMax();
 
 	tl.set('#svg1', {x: svgInvertPoints[0].x, y: svgInvertPoints[0].y});
+	//tl.set('#svg_holder', {x: -50, y: 0});
 
-	tl.to('#svg1', 8, {
+	// tl.to('#svg_holder', 16, {
+	// 	bezier: {
+	// 		type: 'soft',
+	// 		values: getRotations(16)
+	// 	}, ease: Power0.easeNone
+	// });
+
+	tl.to('#svg1', 15, {
 		bezier: {
 			type: 'soft',
 			values: svgInvertPoints
-		}, ease: Power1.easeInOut
-	}, '+=1');
+		}, ease: Power0.easeNone
+	}, '+=0.5');
 
-	tl.to(star, 8, {'stroke-dashoffset' : 0, ease: Power1.easeInOut}, '-=8');
-	tl.to('#marker', 0.6, {opacity: 0}, '-=0.3');
+	tl.to(star, 15, {'stroke-dashoffset' : 0, ease: Power0.easeNone}, '-=15');
+	//tl.fromTo(['#string:before', '#string:after'], 0.4, {opacity: 0}, {opacity: 1}, '-=14.9');
+	tl.set('#string', {rotation: 29}, '-=12.25');
+	tl.set('#string', {rotation: -181}, '-=9.05');
+	tl.set('#string', {rotation: -31}, '-=5.95');
+	tl.set('#string', {rotation: 115}, '-=2.8');
+	tl.to(['#spool', '#string'], 0.6, {opacity: 0}, '-=0.3');
 	tl.to(star, 1.8, {'fill-opacity': 1, 'stroke-opacity': 0, ease: Power3.easeInOut}, '-=0.3');
 	tl.to('#svg1', 1.8, {x: -(50 - (scaleFactor * 50)) + '%', y: -(50 - (scaleFactor * 50)) + '%', scale: scaleFactor, ease: Power3.easeInOut}, '-=1.8');
 	tl.to('#svg_holder', 1.8, {x: '-50%', y: '-50%', ease: Power3.easeInOut}, '-=1.8');
